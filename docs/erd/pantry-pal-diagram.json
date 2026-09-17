@@ -150,36 +150,10 @@
             "fieldName": "created_by_cook_id",
             "fieldType": 4,
             "isPK": false,
-            "isNotNull": false,
+            "isNotNull": true,
             "isUnique": false,
             "defaultValue": "",
             "args": [],
-            "isAutoIncrement": false
-          },
-          {
-            "fieldName": "source",
-            "fieldType": 3,
-            "isPK": false,
-            "isNotNull": true,
-            "isUnique": false,
-            "defaultValue": "user",
-            "args": [
-              1,
-              50
-            ],
-            "isAutoIncrement": false
-          },
-          {
-            "fieldName": "source_url",
-            "fieldType": 3,
-            "isPK": false,
-            "isNotNull": false,
-            "isUnique": false,
-            "defaultValue": "",
-            "args": [
-              1,
-              2048
-            ],
             "isAutoIncrement": false
           },
           {
@@ -236,7 +210,7 @@
             "isAutoIncrement": false
           }
         ],
-        "next_id": 12,
+        "next_id": 10,
         "checkName": [],
         "checkCondition": []
       }

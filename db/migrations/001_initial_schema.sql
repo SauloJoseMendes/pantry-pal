@@ -1,76 +1,68 @@
--- Migration: 001_initial_schema
+-- Migration: 001_initial_schema (PostgreSQL)
 -- Description: Initial database schema for Pantry Pal
 -- Created: 2026-09-17
+-- Notes: ERD design artifact lives at docs/erd/pantry-pal-diagram.json
+--        This file is immutable once applied; future changes go in 002_*.sql, 003_*.sql, ...
+
 CREATE TABLE Cook (
-    cook_id            INT AUTO_INCREMENT PRIMARY KEY,
+    cook_id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username           VARCHAR(50)  NOT NULL UNIQUE,
     email              VARCHAR(255) NOT NULL UNIQUE,
     password_hash      VARCHAR(255) NOT NULL,
     display_name       VARCHAR(100),
-    created_at         DATETIME     NOT NULL
+    created_at         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Pantry (
-    pantry_id          INT AUTO_INCREMENT PRIMARY KEY,
-    cook_id            INT NOT NULL UNIQUE,            
-    created_at         DATETIME NOT NULL,
-    FOREIGN KEY (cook_id) REFERENCES Cook(cook_id)
+    pantry_id          INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cook_id            INT NOT NULL UNIQUE REFERENCES Cook(cook_id),
+    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Ingredient (
-    ingredient_id      INT AUTO_INCREMENT PRIMARY KEY,
+    ingredient_id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name               VARCHAR(120) NOT NULL UNIQUE,
     category           VARCHAR(50),
     default_unit       VARCHAR(20)
 );
 
 CREATE TABLE Recipe (
-    recipe_id          INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id          INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title              VARCHAR(200) NOT NULL,
     description        TEXT,
     instructions       TEXT,
-    created_by_cook_id INT,                            
-    source             VARCHAR(50) NOT NULL DEFAULT 'user',
-    source_url         VARCHAR(2048),                  
+    created_by_cook_id INT NOT NULL REFERENCES Cook(cook_id),
     prep_time_minutes  INT,
     cook_time_minutes  INT,
     servings           INT,
     cuisine            VARCHAR(50),
-    published_at       DATETIME,
-    FOREIGN KEY (created_by_cook_id) REFERENCES Cook(cook_id),
-    CHECK (created_by_cook_id IS NOT NULL OR source <> 'user')  
+    published_at       TIMESTAMP
 );
 
 CREATE TABLE RecipeIngredient (
-    recipe_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
-    recipe_id            INT NOT NULL,
-    ingredient_id        INT NOT NULL,
-    quantity             DECIMAL(10,2) NOT NULL,
+    recipe_ingredient_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    recipe_id            INT NOT NULL REFERENCES Recipe(recipe_id),
+    ingredient_id        INT NOT NULL REFERENCES Ingredient(ingredient_id),
+    quantity             NUMERIC(10,2) NOT NULL,
     unit                 VARCHAR(20) NOT NULL,
-    is_optional          BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (recipe_id)     REFERENCES Recipe(recipe_id),
-    FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id)
+    is_optional          BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE PantryIngredient (
-    pantry_ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
-    pantry_id            INT NOT NULL,
-    ingredient_id        INT NOT NULL,
-    quantity             DECIMAL(10,2) NOT NULL,
+    pantry_ingredient_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    pantry_id            INT NOT NULL REFERENCES Pantry(pantry_id),
+    ingredient_id        INT NOT NULL REFERENCES Ingredient(ingredient_id),
+    quantity             NUMERIC(10,2) NOT NULL,
     unit                 VARCHAR(20) NOT NULL,
-    expiry_date          DATETIME,
-    added_at             DATETIME NOT NULL,
-    FOREIGN KEY (pantry_id)     REFERENCES Pantry(pantry_id),
-    FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id)
+    expiry_date          TIMESTAMP,
+    added_at             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE SavedRecipe (
-    saved_recipe_id INT AUTO_INCREMENT PRIMARY KEY,
-    cook_id         INT NOT NULL,
-    recipe_id       INT NOT NULL,
-    saved_at        DATETIME NOT NULL,
+    saved_recipe_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cook_id         INT NOT NULL REFERENCES Cook(cook_id),
+    recipe_id       INT NOT NULL REFERENCES Recipe(recipe_id),
+    saved_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     notes           TEXT,
-    FOREIGN KEY (cook_id)   REFERENCES Cook(cook_id),
-    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id),
     UNIQUE (cook_id, recipe_id)
 );
