@@ -1,9 +1,8 @@
 from collections.abc import Generator
 
 import psycopg
-from psycopg import Connection
-
 from app.core.config import settings
+from psycopg import Connection
 
 
 def get_connection() -> Generator[Connection, None, None]:
