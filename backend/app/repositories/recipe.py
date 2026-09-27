@@ -200,6 +200,8 @@ class RecipeRepository:
     # ------------------------------------------------------------------
     # Delete
     # ------------------------------------------------------------------
+
+    # TODO: address FK-on-delete case
     def delete(self, recipe_id: int) -> bool:
         """Ingredient lines must be deleted first: RecipeIngredient
         references Recipe WITHOUT ON DELETE CASCADE in the schema."""
