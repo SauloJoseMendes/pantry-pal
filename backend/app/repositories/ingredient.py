@@ -3,7 +3,7 @@ from typing import Any
 import psycopg
 from psycopg.rows import dict_row
 
-from backend.app.schemas.ingredient import Ingredient, IngredientCreate
+from app.schemas.ingredient import Ingredient, IngredientCreate
 
 
 class IngredientRepository:

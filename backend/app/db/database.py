@@ -3,7 +3,7 @@ from collections.abc import Generator
 import psycopg
 from psycopg import Connection
 
-from backend.app.core.config import settings
+from app.core.config import settings
 
 
 def get_connection() -> Generator[Connection, None, None]:

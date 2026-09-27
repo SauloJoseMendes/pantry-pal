@@ -1,7 +1,7 @@
 from psycopg import Connection
 from psycopg.rows import dict_row
 
-from backend.app.schemas.recipe import (
+from app.schemas.recipe import (
     Recipe,
     RecipeCreate,
     RecipeIngredient,
