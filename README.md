@@ -8,8 +8,12 @@ Early development — database design phase.
 
 ## Tech stack
 
-- MySQL (or whatever you're targeting)
-- ERD maintained with [your diagram tool]
+- **FastAPI** — web framework
+- **PostgreSQL** — database (via psycopg)
+- **Pydantic** — data validation
+- **pytest** — testing
+- **ruff** — linting & formatting
+- **mypy** — type checking
 
 ## Database setup
 
@@ -19,5 +23,4 @@ The editable ERD source is at `docs/erd/pantry-pal-diagram.json`.
 To create the schema on a fresh database:
 
 ```bash
-mysql -u &lt;user&gt; -p &lt;db_name&gt; &lt; db/migrations/001_initial_schema.sql
-```
+psql -U &lt;user&gt; -d &lt;db_name&gt; -f db/migrations/001_initial_schema.sql
